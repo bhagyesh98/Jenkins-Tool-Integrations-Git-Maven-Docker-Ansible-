@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-login')
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/octocat/docker-demo.git'
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t myapp:latest .'
+            }
+        }
+        stage('Push to DockerHub') {
+            steps {
+                sh '''
+                    echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+                    docker tag myapp:latest myusername/myapp:latest
+                    docker push myusername/myapp:latest
+                '''
+            }
+        }
+    }
+}
