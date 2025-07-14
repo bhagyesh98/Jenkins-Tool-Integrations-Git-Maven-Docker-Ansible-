@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/yourname/ansible-deploy.git'
+            }
+        }
+        stage('Run Ansible Playbook') {
+            steps {
+                sh 'ansible-playbook -i inventory site.yml'
+            }
+        }
+    }
+}
